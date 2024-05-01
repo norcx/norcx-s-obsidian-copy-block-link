@@ -45,7 +45,7 @@ export default class MyPlugin extends Plugin {
 
         const onClick = (isEmbed: boolean) => {
           if (isHeading) {
-            this.handleHeading(view.file, block as HeadingCache, isEmbed);
+            this.handleHeading(view.file, block as HeadingCache, isEmbed,editor);
           } else {
             this.handleBlock(
               view.file,
@@ -106,7 +106,7 @@ export default class MyPlugin extends Plugin {
     const isHeading = !!(block as any).heading;
 
     if (isHeading) {
-      this.handleHeading(view.file, block as HeadingCache, isEmbed);
+      this.handleHeading(view.file, block as HeadingCache, isEmbed,editor);
     } else {
       this.handleBlock(
         view.file,
@@ -146,12 +146,13 @@ export default class MyPlugin extends Plugin {
     return block;
   }
 
-  handleHeading(file: TFile, block: HeadingCache, isEmbed: boolean) {
+  handleHeading(file: TFile, block: HeadingCache, isEmbed: boolean,editor: Editor) {
     navigator.clipboard.writeText(
       `${isEmbed ? "!" : ""}${this.app.fileManager.generateMarkdownLink(
         file,
         "",
-        "#" + sanitizeHeading(block.heading)
+        "#" + sanitizeHeading(block.heading),
+        editor.getSelection()
       )}`
     );
   }
@@ -170,7 +171,8 @@ export default class MyPlugin extends Plugin {
         `${isEmbed ? "!" : ""}${this.app.fileManager.generateMarkdownLink(
           file,
           "",
-          "#^" + blockId
+          "#^" + blockId,
+          editor.getSelection()
         )}`
       );
     }
@@ -190,7 +192,8 @@ export default class MyPlugin extends Plugin {
       `${isEmbed ? "!" : ""}${this.app.fileManager.generateMarkdownLink(
         file,
         "",
-        "#^" + id
+        "#^" + id,
+        editor.getSelection()
       )}`
     );
   }
